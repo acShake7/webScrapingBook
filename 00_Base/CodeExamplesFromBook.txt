@@ -1,0 +1,3 @@
+Code Examples from the book by the author
+
+at https://github.com/REMitchell/python-scraping
