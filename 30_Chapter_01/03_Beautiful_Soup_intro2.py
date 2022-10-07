@@ -9,4 +9,3 @@ print(bs1.h1)
 
 # bs = BeautifulSoup(html.read(), 'html.parser')
 # print(bs.h1)
-
