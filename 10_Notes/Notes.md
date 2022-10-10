@@ -141,3 +141,87 @@ else:
     else:
         print(tagContent)
 ```
+<br> <br>
+
+---
+
+# Chapter 2: Advanced HTML Parsing
+
+## find() and find_all() with BeautifulSoup
+
+
+find_all() - Finds all the tags on that page
+find() - Finds the first instance of the tag on that page
+
+<br>
+
+> BeautifulSoup.find_all(tagName, tagAttribute, recursive, text, limit, keywords)
+BeautifulSoup.find(tagName, tagAttribute, recursive, text, keywords)
+
+<br>
+
+**tagName** - you can pass a string name of a tag or even a Python list of string tag names.
+
+**tagAttributes** - takes a Python dictionary of attributes and matches tags that contain any one of those attributes.
+
+    bs.find_all('span', {'class':{'green','red'}})
+    # finds all green and red span tags
+
+**recursive** - boolean argument. How deep do you want to go? If True, then find_all will look into children and children's children and .... for tags that match your parameters. If set to False, it will look only at the top level tags in your document.
+
+**text** - matches based on the text content of the tags, rather than the properties of the tags themselves.
+
+**limit** - limits the search to the first 'x' items.
+
+**keyword** - allows you to select tags that contain a particular attribute or set of attributes.
+
+> bs.find_all(id='title', class_='text')
+
+P.S. 'class' is a protected keyword in Python. The workaround in BeautifulSoup is to use 'class_'
+
+<br>
+
+### Using a list of arguments vs Keywords
+
+The 2 lines below are identical:
+```
+bs.find_all(id='text')
+bs.find_all('', {'id':'text'})
+```
+same for the 2 lines below
+```
+bs.find_all(class_='green')
+bs.find_all('',{'class':'green'})
+```
+
+Passing a list of tags to bs.find_all() via the attributes list acts as an `or` filter [it selects a list of all tags that have tag1 or tag2 or tag3, ...]. If you have a lengthy list of tags you can end up with plenty that you dont want.
+
+However, the `keyword` argument in bs.find_all() allows you to add an additional `and` filter to this. [e.g. bs.find_all(id='title', class_='text') finds a tag that has a title id **and** text class, **(not or)**.]
+
+<br><br>
+
+**Tag.get_text()**
+
+    To get to the content in the tag. It strips all tags from the document and returns a Unicode string containing the text only.
+
+    P.S. If you have nested tags like hyperlinks, span styles, etc.. they will all be stripped away.
+
+
+## Other Beautiful Soup Objects
+
+**BeauifulSoup objects**
+
+    Instances seen in previous code examples as the variable 'bs'.
+
+**Tag Objects**
+
+    Retrieved in lists or individually by called find or find_all on a BeautifulSoup object, or drilling down (bs.div.h1)
+
+**NavigableString Object**
+
+    Used to represent text within tags, rather than the tags themselves.
+
+**Comment Objects**
+
+    Used to find HTML comments in comment tags, <!-- like this one-->
+
