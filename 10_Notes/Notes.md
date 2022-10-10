@@ -51,9 +51,93 @@ print(bs1.h1)
 
 ### Parsers
 
->><p style="color:red;">Put a table here to see what parsers are available</p>
 
+- html.parser (built into python)
+- lxml
+- html5lib
 
+```
+bs = BeautifulSoup(html, 'html.parser')
+bs = BeautifulSoup(html, 'lxml')
+bs = BeautifulSoup(html, 'html5lib')
+```
 <br>
+
 ---
 
+## Handling Exceptions
+
+When you request data from a URL (using urlopen), 2 main things could go wrong:
+
+1. The page is not found on the server (or there is an error retrieving it).
+
+    A **HTTPError** will be returned - it may be a '404 Page Not Found' or '500 Internal Server Error' or so on.
+
+2. The server is not found or the server is down.
+
+    In this case a **URLError** is returned.
+
+<br>
+
+**NOTE:** The remote server is responsible for returning the HTTP status codes. So if the URL is down/non-existent, then the remote server will not be able to throw a HTTPError. The URLError must be caught.
+
+<br>
+
+### Problems with Tags - AttributeError
+
+    If you attempt to access a tag that does not exist, BeautifulSoup will return a *None* object
+
+    Now, if you try to access a tag on a *None* object, an **AttributeError** will be thrown.
+
+Code Base to check for `HTTPError`, `URLError` and `AttributeError`:
+```
+from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
+from bs4 import BeautifulSoup
+
+
+def returnHTML(url):
+    try:
+        html = urlopen(url)
+    except HTTPError as e:
+        print(e)
+        print("HTTPError caught: File not found.")
+        return None
+
+    except URLError as e:
+        print(e)
+        print("URLError caught - Server does not exist or is down.")
+        return None
+
+    else:
+        return html
+
+
+def accessTag(html):
+    bs = BeautifulSoup(html, 'html.parser')
+    try:
+        # tagContent = bs.body.h1 # This should work
+        tagContent = bs.body1.h4
+    except AttributeError as e:
+        print(e)
+        print('AttributeError thrown and caught - tag does not exist')
+        return None
+    else:
+        if tagContent==None:
+            print('Tag does not exist - None object generated')
+            return None
+        else:
+            return tagContent
+
+
+url = "http://pythonscraping.com/pages/page1.html"
+html = returnHTML(url)
+if html == None:
+    print("No HTML returned due to the Error")
+else:
+    tagContent = accessTag(html)
+    if tagContent==None:
+        print('Content is None as the Tag did not exist. Try again with a tag that exists.')
+    else:
+        print(tagContent)
+```
