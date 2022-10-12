@@ -225,3 +225,62 @@ However, the `keyword` argument in bs.find_all() allows you to add an additional
 
     Used to find HTML comments in comment tags, <!-- like this one-->
 
+---
+
+<br>
+
+## Navigating Trees with Beautiful Soup
+
+**Children** are exactly one tag below a parent.
+
+**Descendants** can be at any level in the tree below a parent.
+
+> All children are descendants BUT not all descendants are not children.
+
+<br>
+In general, BeautifulSoup functions always deal with the descendants of the current tag selected.
+
+e.g. `bs.div.find_all('img')` will find the first `div` tag in the document, and then retrieve a list of all the `img` tags that are descendants of that `div` tag.
+
+<br>
+
+### Navigating to Children or Descendants
+<br>
+
+The `children()` and `descendants()` functions come in handy here.
+```
+# Children: This one will print all the children tags ONLY
+for child in bs.find('table', {'id':'giftList'}).children:
+    print(child)
+
+# Descendants: This one on the other hand will print all the tags at each sub-nested-level 
+for child in bs.find('table', {'id':'giftList'}).descendants:
+    print(child)
+```
+
+<br>
+
+### Navigating by Siblings
+<br>
+
+`next_siblings()` makes it trivial to collect data from tables especially ones with title rows.
+
+```
+# This outputs all the rows of the products from the product table except for the first row (the title row)
+
+for sibling in bs.find('table', {'id':'giftList'}).tr.next_siblings:
+    print(sibling)
+```
+
+Note: Objects cannot be siblings with themselves. So if you point BeautifulSoup to the table header row and from there use the `next_sibings()` function, it will return all the individual rows below (i.e. the ones at the same level in the table tree heirarchy)
+
+
+The complement to `next_siblings()` is the `previous_siblings()` function.
+
+`next_sibling()` and `previous_sibling()` perform similarly except for returning just a single tag rather than a list of them.
+
+
+<br>
+
+### Navigating by Parents
+<br>
