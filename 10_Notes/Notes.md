@@ -284,3 +284,5 @@ The complement to `next_siblings()` is the `previous_siblings()` function.
 
 ### Navigating by Parents
 <br>
+
+BeautifulSoup's parent-finding functions are `bs.parent()` and `bs.parents()`
