@@ -13,7 +13,7 @@ _**TO DO -**_ Browse documentation
 from urllib.request import urlopen
 html = urlopen('http://pythonscraping.com/pages/page1.html')
 ```
->><p style="color:red;">what type of object does this return</p>
+><p style="color:red;">what type of object does this return</p>
 
 <br>
 
