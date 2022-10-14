@@ -198,13 +198,15 @@ Passing a list of tags to bs.find_all() via the attributes list acts as an `or` 
 
 However, the `keyword` argument in bs.find_all() allows you to add an additional `and` filter to this. [e.g. bs.find_all(id='title', class_='text') finds a tag that has a title id **and** text class, **(not or)**.]
 
-<br><br>
+<br>
 
 **Tag.get_text()**
 
     To get to the content in the tag. It strips all tags from the document and returns a Unicode string containing the text only.
 
     P.S. If you have nested tags like hyperlinks, span styles, etc.. they will all be stripped away.
+
+<br>
 
 
 ## Other Beautiful Soup Objects
