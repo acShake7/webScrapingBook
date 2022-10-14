@@ -1,9 +1,9 @@
 # Regex Notes
 
-><p style="color:red;">TO DO > Notes for Regex - merge from Web Scraping book and Automate the Boring Stuff book. </p>
+Python Regex Documentation <a href="https://docs.python.org/3/library/re.html">docs.python.org</a>
+> A lot more here. Wow!
 
-
-><p style="color:red;">Also for now, I have just the regex bit. I need to actually do the whole process. creatign the regex object, matching it, parsing, etc... Right now I am doing it just from the POV of pairing it with BeautifulSoup where it has a different mechanism of matching. </p>
+> Also look at this link: Prety neat tutorial from Real Python : https://realpython.com/regex-python/
 
 <br>
 
@@ -41,6 +41,11 @@ matched_obj = phoneNum_Regex_object.search("My phone number is 520-567-3458. Cal
 
 print("Phone number found is: " + matched_obj.group())
 ```
+<br>
+
+---
+
+<br><br>
 
 ## Recap : Steps in Finding a String Regex pattern
 
@@ -150,75 +155,266 @@ If there are groups in the regular expression, then `findall()` will return a li
 
 ## Making your own Character Classes
 
-><p style="color:red;">STOPPED HERE - RESUME FROM HERE</p>
+You can define your own character class using square brackets [ ]
+
+For e.g. the character class [aeiouAEIOU] will match any vowel upper or lower case.
+
+```
+>> vowel_Regex = re.compile(r'[aeiouAEIOU]')
+>> vowel_Regex.findall("Pick all the VOWELS!")
+['i', 'a', 'e', 'O', 'E']
+```
+
+You can also include a **range of numbers or letters** by using a hyphen (-). e.g. [a-zA-Z0-9] will match all lower case and uper case letter and numbers.
+
+> Note that inside the square brackets, the normal regular expression symbols are not interpreted as such. This means you do not need to escape the ., *, ?, or () characters with a preceding backslash. <br>For example, the character class [0-5.] will match digits 0 to 5 and a period. You do not need to write it as [0-5\.]
+
+<br>
+
+### Negative Character Set
+By placing a caret (^) just after the charcter class's opening square bracket, you can make a *negative charracter class* - i.e. it will match everything not in the character class. 
+
+```
+>> vowel_Regex = re.compile(r'[^aeiouAEIOU]')
+>> vowel_Regex.findall("DONT Pick all the VOWELS!")
+['D', 'N', 'T', ' ', 'P', 'c', 'k', ' ', 'l', 'l', ' ', 't', 'h', ' ', 'V', 'W', 'L', 'S', '!']
+```
+
+<br><br>
+
+## Start and End of Searched Text
+`^` at the start of a regex to indicate that a match MUST occur at the beginning of the searched text.
+
+`$` at the end of a regex to indicate that the searched string MUST end with this regex pattern.
+
+You can use the `^` and `$` to indicate that the entire searched string must match the regex.
+
+```
+>> begins_With_Hello = re.compile(r'^Hello')
+>> begins_With_Hello.search("Hello friend!")
+<re.Match object; span=(0, 5), match='Hello'>
+
+>> begins_With_Hello.search("Hi and Hello friend!") == None
+True
+```
+
+```
+>> end_with_number = re.compile(r'\d$')
+>> end_with_number.search("my age is 42")
+<re.Match object; span=(11, 12), match='2'>
+```
+
+```
+>> whole_string_is_num = re.compile(r'^\d+$')
+>> whole_string_is_num.search("12345678")
+<re.Match object; span=(0, 8), match='12345678'>
+
+>> whole_string_is_num.search("12xc34") == None
+True
+```
+<br><br>
+
+## Matching Everything with Dot-Star (`.*`)
+
+Sometimes you want to match everything and anything.
+
+```
+>> nameRegex = re.compile(r'First Name: (.*) Last Name: (.*)')
+>> mo = nameRegex.search("First Name: Al Last Name: Jones")
+
+>> mo.group()
+First Name: Al Last Name: Jones
+
+>> mo.group(1)
+Al
+
+>> mo.group(2)
+Jones
+```
+
+`.*` uses greedy mode and tries to grab as much as possible. To use non-greedy mode use `.*?`
+
+```
+>> non_greedy_regex = re.compile(r'<.*?>')
+>> mo = non_greedy_regex.search("<To serve man> for dinner>")
+>> mo.group()
+<To serve man>
 
 
-<br><br><br><br><br>
+>> greedy_regex = re.compile(r'<.*>')
+>> mo = greedy_regex.search("<To serve man> for dinner>")
+>> mo.group()
+<To serve man> for dinner>
+```
+<br><br>
 
-a* - 0 or more
+## Matching New Lines with the Dot character
 
+`.*` will match everything except a newline.
+
+By passing `re.DOTALL` as the second argument to `re.compile()`, you can make the dot character (.) match *ALL* characters including the newline character (\n).
+
+```
+>> noNewLineRegex = re.compile(r'.*')
+>> noNewLineRegex.search("First line.\nSecond line.").group()
+First line.
+
+>> NewLineRegex = re.compile(r'.*', re.DOTALL)
+>> NewLineRegex.search("First line.\nSecond line.").group()
+First line.
+Second line.
+```
+
+<br>
+
+## Case-Insensitive Matching
+
+`re.compile(r'RoboCop')` and `re.compile(r'robocop')` match different strings.
+
+If you dont care about case then pass `re.I` or `re.IGNORECASE` as the second argument to `re.compile()`
+
+`re.compile(r'robocop', re.IGNORECASE)` will now match any of these - RoboCop, robocop, roboCOP, ...
+
+<br>
+
+## Substituting strings with the `sub()` method
+
+Regex can not only find text patterns but can also find and substitute new text in place of those patterns. 
+
+The `sub()` method for Regex objects is passed two arguments. The first argument is a string to replace any matches. The second is the string for the regular expression. The `sub()` method returns a string with the substitutions applied.
+
+```
+>> namesRegex = re.compile(r'Agent \w+')
+>> namesRegex.sub("CENSORED", "Agent Alice gave secret docs to Agent Bob.")
+CENSORED gave secret docs to CENSORED.
+```
+
+<br>
+Sometimes you may need to use the matched text itself as part of the substitution. In the first argument to `sub()`, you can type \1, \2, \3, and so on, to mean “Enter the text of group 1, 2, 3, and so on, in the substitution.”
+
+
+```
+>> namesRegex = re.compile(r'Agent (\w)\w*')
+>> namesRegex.sub(r'\1****', "Agent Alice gave secret docs to Agent Bob when she saw Agent Paul.")
+A**** gave secret docs to B**** when she saw P****.
+```
+
+The `\1` in that string will be replaced by whatever text was matched by group 1—that is, the (`\w`) group of the regular expression.
+
+<br><br>
+
+## VERBOSE Mode
+
+Matching complicated text patterns might require long, convoluted regular expressions. You can mitigate this by telling the `re.compile()` function to ignore whitespace and comments inside the regular expression string. This “verbose mode” can be enabled by passing the varible `re.VERBOSE` as the second argument to `re.compile()`.
+
+
+So this long complicated regex below can be reframed.
+```
+phoneRegex = re.compile(r'((\d{3}|\(\d{3}\))?(\s|-|\.)?\d{3}(\s|-|\.)\d{4}(\s*(ext|x|ext.)\s*\d{2,5})?)')
+```
+
+It can be reframed as :
+
+```
+phoneRegex = re.compile(r'''(
+    (\d{3}|\(\d{3}\))?            # area code
+    (\s|-|\.)?                    # separator
+    \d{3}                         # first 3 digits
+    (\s|-|\.)                     # separator
+    \d{4}                         # last 4 digits
+    (\s*(ext|x|ext.)\s*\d{2,5})?  # extension
+    )''', re.VERBOSE)
+```
+
+Note that this previous code uses the triple quotes syntax (''') to create a multi-line string so that you can spread the regex definition over multiple lines and more comments (phython rules) to make it more legible.
+
+<br><br>
+
+## Combining arguments for `re.compile()`
+
+Unfortunately, the re.compile() function takes only a single value as its second argument. You can get around this limitation by combining the `re.IGNORECASE`, `re.DOTALL`, and `re.VERBOSE` variables using the pipe character (`|`), which in this context is known as the *bitwise or* operator.
+
+```
+someRegexValue = re.compile('foo', re.IGNORECASE | re.DOTALL | re.VERBOSE)
+```
+
+
+
+
+
+
+---
+<br><br>
+
+# Review of Regex Symbols
+
+### `?` Optional
+`?` - optional - sometimes you want to match a pattern optinally. i.e. the regex should find a match wether or not that bit of text is there.
+
+The `?` character flags the group that preceeds it to be an optional part of the pattern. In other words, it matches it 0 or once.
+
+```
+batRegex = re.compil(r'Bat(wo)?man')
+
+# this will return both Batman or Batwoman
+```
+
+### `.` Wildcard
+`.` - is a wildcard character and will match any character except a newline. [to match an actual '.' use the escape sequence '\.']
+
+<br>
+
+### `*` Zero or more
+`*` - matches 0 or more fo the preceeding group
 (cc)* - can be grouped - 'cc' 0 or more times. basically even times.
 
-|
+<br>
+
+### `|` Or
 (d|e) - this thing or that thing - d or e
+```
 batRegex = re.compil(r'Bat(man|mobile|copter|woman)')
+```
 
-? - optional - sometimes you want to match a pattern optinally. i.e. the regex should find a match wether or not that bit of text is there. The `?` character flags the group that preceeds it to be an optional part of the pattern.
-batRegex = re.compil(r'Bat(wo)?man') # this will return both Batman or Batwoman
+<br>
 
-\+ 1 or more times
+### `+` 1 or more times
+Matches the preceeding group 1 or more times.
 
-[ ] - matches any character within the brackets
+<br>
 
-( ) - grouped sub expression. can be static like (cc)* or more flexible like (b*a)+
+### `{ }` repetitions
 
-{m} - specific numer of repetitions m times. 
+{m} - matches m specific repetitions of the preceeding group.
 
 {m,n} - matches the preceeding character, subexpression or bracketed character between m & n times (inclusive). Can also be unbounded e.g. {m,} is m times or more. or {,n} is repetion upto m times including 0 times.
 
-Greedy & Non-Greedy matching.
+*Greedy & Non-Greedy matching.*
 > (Ha){3,5}
 
 `group()` returns the most number of Ha's it can grab. so if it can grab 3,4 or 5 - it will go for 5. This is `greedy` and it is the default. i.e. it will match with the longest possible string possible even thought the shorter versions are also valid and satify the regex pattern. 
 
-The non-greedy version of the curly brackets { }, i.e. matches the smallest string possible, has the closing curly bracket followed by a question mark (?)
+The `non-greedy` version of the curly brackets { }, i.e. matches the smallest string possible, has the closing curly bracket followed by a question mark (`?`)
 > (Ha){3,5}? 
 
+<br>
+
+### Specifying the Beginning and/or End of a String to Match
+^spam - means that the string must begin with spam.
+
+spam$ - means that the string must end with spam.
 
 
+<br>
 
+### `[ ]` Match any character betwen the bracekts
 
-a{2,3}b{2,3} = aabbb, aaabbb, aabb, ...
+<br>
 
-[^] - matches any single character that is not in the bracket. e.g. [^A-Z]* ... e.g. apple, lowercase, querty
+`[ ]` - matches any character within these brackets
 
-.
+`[^ ]` - match any character that isnt with these brackets
 
-^ - indicates that a character or subexpression occurs at the beginning of a string
+<br>
 
-\ - escape character
-
-$
-
-?! - does not contain
-
-
-
-<table>
-    <tr>
-        <td>hellow</td>
-        <td>hellow</td>
-        <td>hellow this is who i am and this is very cool</td>
-    </tr>
-    <tr>
-        <td>hellow</td>
-        <td>hellow</td>
-        <td>hellow this is who i am and this is very cool</td>
-    </tr>
-    <tr>
-        <td>hellow</td>
-        <td>hellow</td>
-        <td>hellow this is who i am and this is very cool</td>
-    </tr>
-
-</table>
+---
