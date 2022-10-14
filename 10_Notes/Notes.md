@@ -306,3 +306,53 @@ A regular expression (regex) can be inserted as any argument in a Beautiful Soup
 ../img/gifts/img6.jpg
 ```
 
+<br><br>
+
+## Accessing Attributes
+
+Often in web scraping you are looking for one of 2 things:
+1. the contents of a tag ......... &
+2. the attributes of a tag (e.g. the `src` attribute in a `img` tag)
+
+With tag objects, a Python list of attributes can be automatically accessed by calling `myTag.attrs`.
+
+This returns a Python dictionary object that makes retrieval and mainpulation of these attributes trivial.
+
+```
+myImageTag.attrs['src']
+```
+<br><br>
+
+## Lambda Expressions
+A *lambda expression* is a function that is passed into another function as a variable. 
+
+BeautifulSoup allows you to pass certain types of functions as parameters into the `find_all()` function.
+
+The only restriction is that these functions must take a tag object as an argument and return a boolean. Every tag object that BeautifulSoup encounters is evaluated in this function, and tags that evaluate to *True* are returned, while the rest are discarded.
+
+
+For e.g. in the code below, if the tag has 2 attributes in the dictinary then the expression is *True*. When this is *True* the `find_all()` function will return the tag. Ones that are *False* are rejected and not chosen.
+```
+bs.find_all(lambda tag: len(tag.attrs) == 2)
+```
+
+**Lambda functions are so useful you can even use them to replace existing BeautifulSoup functions:**
+
+```
+bs.find_all(lambda tag: tag.get_text() == 'Or maybe he\'s only resting?')
+```
+the same can be achieved without a lambda function:
+
+```
+bs.find_all('', text='Or maybe he\'s only resting?')
+```
+
+However, if you remember the syntax for the lambda function, and how to access tag properties, you may never need to remember any other BeautifulSoup syntax again!
+
+Because the provided lambda function can be any function that returns a *True* or *False* value, you can even combine them with regular expressions to find tags with an attribute matching a certain string pattern.
+
+<br><br>
+
+---
+
+<br>
