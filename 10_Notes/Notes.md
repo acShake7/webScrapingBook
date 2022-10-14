@@ -286,3 +286,23 @@ The complement to `next_siblings()` is the `previous_siblings()` function.
 <br>
 
 BeautifulSoup's parent-finding functions are `bs.parent()` and `bs.parents()`
+
+<br><br>
+
+## Navigating through Regex
+### Regex & Beautiful Soup
+
+A regular expression (regex) can be inserted as any argument in a Beautiful Soup expression. Allows for a great deal of power and flexiblity in finding the target element.
+```
+>> images = bs.find_all('img', {'src': re.compile(r'../img/gifts/img.*\.jpg')})
+
+>> for image in images:
+>>    print(image['src'])
+
+../img/gifts/img1.jpg
+../img/gifts/img2.jpg
+../img/gifts/img3.jpg
+../img/gifts/img4.jpg
+../img/gifts/img6.jpg
+```
+
