@@ -1,5 +1,15 @@
 # To Do
 
+
+
+# Short term
+
+- convert to pdf / print my markdown files and notes.
+
+
+
+# Mid term
+
 - urllib -> browse package (q&d - 10 min)
 
 - in urllib.request ... what does urlopen do specifically? what type of object does it return?
