@@ -323,6 +323,14 @@ This returns a Python dictionary object that makes retrieval and mainpulation of
 ```
 myImageTag.attrs['src']
 ```
+
+To check that a tag has a particular attribute is the same as checking if the attribute is in the dictionary (like the check if a key is in a Python dictionary). e.g. to check if a tag has a 'href' attribute:
+
+```
+if 'href' in tag.attrs:
+    print(tag.attrs['href'])
+```
+
 <br><br>
 
 ## Lambda Expressions

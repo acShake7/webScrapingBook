@@ -360,7 +360,7 @@ batRegex = re.compil(r'Bat(wo)?man')
 ```
 
 ### `.` Wildcard
-`.` - is a wildcard character and will match any character except a newline. [to match an actual '.' use the escape sequence '\.']
+`.` - is a wildcard character and will match any character except a newline. [to match an actual '.' use the escape sequence '\\.']
 
 <br>
 
