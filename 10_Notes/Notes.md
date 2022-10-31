@@ -365,4 +365,46 @@ Because the provided lambda function can be any function that returns a *True* o
 
 ---
 
+# Chapter 3: Writing Web Crawlers
+
 <br>
+
+*Note: Google crawlers cant do things like submit forms, find pages that havent been linked to it by a top level domain, or investigate sites where `robot.txt` prohibits it.*
+
+<br>
+
+## Recursion Limit in Python
+
+Python has a defautl recursion limit (the number of times a program can recursively call itself) of 10,000.
+
+So this program below that scrapes new links from wikipedia, and follows that link will hit that recursion limit and stop, unless you put in a recursion counter or something to tackle/workaround that.
+
+```
+def getLinks(pageURL):
+    ...
+    
+    for link in lis_of_links:
+        if some_condition:
+            if encountered_New_Page_URL:
+                newPage = newURLFound
+                SetOfLinks.add(newPage)
+                getLinks(newPage) # function calling itself again
+```
+
+
+<br>
+
+## Handling Redirects
+
+Redirects allow a web server to point one domain name or URL to a piece of content at a different location.
+
+There are two types of redirects:
+
+1. **Server-side** redirects, where the URL is changed before the page is loaded
+2. **Client-side** redirects, sometimes seen with a “You will be redirected in 10 seconds” type of message, where the page loads before redirecting to the new one.
+
+With server-side redirects, you usually don’t have to worry. If you’re using the 'urllib' library with Python 3.x, it handles redirects automatically! If you’re using the `requests` library, make sure to set the `allow-redirects` flag to *True*:
+
+> r = requests.get('http://github.com', allow_redirects=True)
+
+Just be aware that, occasionally, the URL of the page you’re crawling might not be exactly the URL that you entered the page on. For more information on client-side redirects, which are performed using JavaScript or HTML.
